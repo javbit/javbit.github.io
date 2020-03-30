@@ -10,19 +10,23 @@ jobs:
       - checkout
       - restore_cache:
           name: Restore cached dependencies
-          key: site-{{ checksum \'stack.yaml\' }}
+          key: site-{{ checksum stack.yaml }}
       - run:
           name: Resolve/update dependencies
           command: stack --no-terminal setup
-      - save_cache:
-          name: Cache dependencies
-          key: site-{{ checksum \'stack.yaml\' }}
-          paths:
-            - ~/.stack
-            - ~/.stack-work
       - run:
           name: Rebuild site
           command: stack --no-terminal run rebuild
+      - save_cache:
+          name: Cache dependencies
+          key: site-{{ checksum stack.yaml }}
+          paths:
+            - .stack
+            - .stack-work
+            - ~/.stack
+            - ~/.stack-work
+            - /root/.stack
+            - /root/.stack-work
       - run:
           name: Deploy site to GitHub
           command: |
